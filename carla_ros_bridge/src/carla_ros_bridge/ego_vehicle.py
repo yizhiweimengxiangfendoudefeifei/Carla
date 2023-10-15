@@ -84,7 +84,7 @@ class EgoVehicle(Vehicle):
             qos_profile=10)
         
         self.control_subscriber = node.new_subscription(
-            Pose,
+            CarlaEgoVehicleControl,
             "/control",
             lambda data: self.control_command_updated(data, manual_override=False),
             qos_profile=10)
@@ -190,7 +190,6 @@ class EgoVehicle(Vehicle):
             vehicle_info.center_of_mass.x = vehicle_physics.center_of_mass.x
             vehicle_info.center_of_mass.y = vehicle_physics.center_of_mass.y
             vehicle_info.center_of_mass.z = vehicle_physics.center_of_mass.z
-            # print(vehicle_info.mass)
 
             self.vehicle_info_publisher.publish(vehicle_info)
 
@@ -227,6 +226,7 @@ class EgoVehicle(Vehicle):
         """
         Set the vehicle control mode according to ros topic
         """
+        print(enable.data)
         self.vehicle_control_override = enable.data
 
     def control_command_updated(self, ros_vehicle_control, manual_override):
@@ -246,36 +246,24 @@ class EgoVehicle(Vehicle):
         """
         if manual_override == self.vehicle_control_override:
             vehicle_control = VehicleControl()
-            vehicle_control.hand_brake = ros_vehicle_control.hand_brake
+            vehicle_control.hand_brake = False
             vehicle_control.brake = ros_vehicle_control.brake
             vehicle_control.steer = ros_vehicle_control.steer
             vehicle_control.throttle = ros_vehicle_control.throttle
-            vehicle_control.reverse = ros_vehicle_control.reverse
-            vehicle_control.manual_gear_shift = ros_vehicle_control.manual_gear_shift
+            vehicle_control.reverse = False
+            vehicle_control.manual_gear_shift = False
             vehicle_control.gear = ros_vehicle_control.gear
             self.carla_actor.apply_control(vehicle_control)
             self._vehicle_control_applied_callback(self.get_id())
-        # if manual_override == self.vehicle_control_override:
-        #     vehicle_control = VehicleControl()
-        #     if ros_vehicle_control.position.y >= 0.0:
-        #         # 加速
-        #         if ros_vehicle_control.position.y>1.0:
-        #             ros_vehicle_control.position.y = 1.0
-        #         vehicle_control.throttle = ros_vehicle_control.position.y
-        #         vehicle_control.brake = 0
-        #     else:
-        #         if -ros_vehicle_control.position.y > 1.0:
-        #             ros_vehicle_control.position.y = -1.0
-        #         vehicle_control.throttle = 0
-        #         vehicle_control.brake = -ros_vehicle_control.position.y
-        #     vehicle_control.steer = ros_vehicle_control.position.x / 100
 
-        #     vehicle_control.hand_brake = False
-        #     vehicle_control.reverse = False
-        #     vehicle_control.gear = 0
-        #     vehicle_control.manual_gear_shift = False
-        #     self.carla_actor.apply_control(vehicle_control)
-        #     self._vehicle_control_applied_callback(self.get_id())
+            # vehicle_control = VehicleControl()
+            # vehicle_control.hand_brake = ros_vehicle_control.hand_brake
+            # vehicle_control.brake = ros_vehicle_control.brake
+            # vehicle_control.steer = ros_vehicle_control.steer
+            # vehicle_control.throttle = ros_vehicle_control.throttle
+            # vehicle_control.reverse = ros_vehicle_control.reverse
+            # vehicle_control.manual_gear_shift = ros_vehicle_control.manual_gear_shift
+            # vehicle_control.gear = ros_vehicle_control.gear
 
     def enable_autopilot_updated(self, enable_auto_pilot):
         """

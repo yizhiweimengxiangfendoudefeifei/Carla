@@ -66,14 +66,15 @@ class OdometrySensor(PseudoActor):
         odometry.child_frame_id = self.parent.get_prefix()
         try:
             odometry.pose.pose = self.parent.get_current_ros_pose()
-            # odometry.twist.twist = self.parent.get_current_ros_twist_rotated()
-            # print("vx = %f vy = %f vz = %f"%(odometry.twist.twist.linear.x, odometry.twist.twist.linear.y, odometry.twist.twist.linear.z))
+            odometry.twist.twist = self.parent.get_current_ros_twist_rotated()
+            print("vx = %f vy = %f vz = %f"%(odometry.twist.twist.linear.x, odometry.twist.twist.linear.y, odometry.twist.twist.linear.z))
             # print("x = %f y = %f z= %f"%(odometry.pose.pose.position.x,odometry.pose.pose.position.y,odometry.pose.pose.position.z))
             # quaternion = (odometry.pose.pose.orientation.x,
             #                 odometry.pose.pose.orientation.y,
             #                 odometry.pose.pose.orientation.z,
             #                 odometry.pose.pose.orientation.w)
             # _, _, yaw = tf.euler_from_quaternion(quaternion)
+            # print(yaw)
             # print("vx = %f"%(odometry.twist.twist.linear.x * math.cos(yaw) - odometry.twist.twist.linear.y * math.sin(yaw)))
             # print("vy = %f"%(odometry.twist.twist.linear.y * math.cos(yaw) + odometry.twist.twist.linear.x * math.sin(yaw)))
 

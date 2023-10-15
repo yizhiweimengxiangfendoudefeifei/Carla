@@ -42,6 +42,10 @@ class ScenarioRunnerRunner(ApplicationRunner):
                    "--timeout", "1000000",
                    "--host", self._host,
                    "--port", str(self._port)]
+        # scenario_file = "FollowLeadingVehicle_1"
+        # cmdline = [python_path, "{}/scenario_runner.py".format(self._path),
+        #            "--scenario", "{}".format(scenario_file),
+        #            "--reloadWorld"]
         if self._wait_for_ego:
             cmdline.append("--waitForEgo")
         return self.execute(cmdline, env=os.environ)

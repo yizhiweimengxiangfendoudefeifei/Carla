@@ -295,7 +295,7 @@ class CarlaAckermannControl(CompatibleNode):
         self.last_ackermann_msg_received_sec = self.get_time()
         # set target values
         self.set_target_steering_angle(ros_ackermann_drive.steering_angle)
-        print("ros_ackermann_drive.speed = %f"%(ros_ackermann_drive.speed))
+        # print("ros_ackermann_drive.speed = %f"%(ros_ackermann_drive.speed))
         self.set_target_speed(ros_ackermann_drive.speed)
         self.set_target_accel(ros_ackermann_drive.acceleration)
         self.set_target_jerk(ros_ackermann_drive.jerk)
@@ -443,8 +443,6 @@ class CarlaAckermannControl(CompatibleNode):
                 self.info.status.speed_control_activation_count -= 1
         # set the auto_mode of the controller accordingly
         self.speed_controller.auto_mode = self.info.status.speed_control_activation_count >= 5
-        print("speed_control_activation_count = %d"%(self.info.status.speed_control_activation_count))
-        print("是否使用速度比例 = %d"%(self.speed_controller.auto_mode))
         if self.speed_controller.auto_mode:
             self.speed_controller.setpoint = self.info.target.speed_abs
             self.info.status.speed_control_accel_delta = float(self.speed_controller(

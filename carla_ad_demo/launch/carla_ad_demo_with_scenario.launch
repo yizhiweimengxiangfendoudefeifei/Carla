@@ -1,36 +1,24 @@
 <!-- -->
 <launch>
-  <arg name='host' default='localhost'/>
-  <arg name='port' default='2000'/>
-  <arg name='timeout' default='10'/>
-  <arg name='town' default='Town01'/>
-  <arg name='role_name' default='ego_vehicle'/>
-  <!-- use comma separated format "127.4,-195.4,0.1,0,0,180" -->
-  <arg name='spawn_point' default='120,-133.4,0.1,0,0,0'/>
-  <!-- <arg name='spawn_point' default='127.4,-195.4,0.1,0,0,180'/> -->
-  <arg name='use_manual_control' default='False'/>
-
-  <!-- Enable/disable passive mode -->
-  <arg name='passive' default='False'/>
-
-  <!-- Synchronous mode-->
-  <arg name='synchronous_mode_wait_for_vehicle_control_command' default='False'/>
-  <arg name='fixed_delta_seconds' default='0.05'/>
+  <!-- carla parameter -->
+  <arg name='host' default='localhost'/> <!-- host the carla server is running on -->
+  <arg name='port' default='2000'/> <!-- port of the carla server -->
+  <arg name="town" default="Town01"/> <!-- the carla town to load-->
+  <arg name='timeout' default='10'/> <!-- the carla timeout for server communication -->
+  <arg name='passive' default='False'/> <!-- enable/disable passive mode -->
+  <arg name='synchronous_mode_wait_for_vehicle_control_command' default='False'/><!-- should the ros bridge wait for a vehicle control command before proceeding with the next tick -->
+  <arg name='fixed_delta_seconds' default='0.05'/><!-- frequency of the carla ticks -->
 
   <!-- scenario runner parameter -->
   <arg name='scenario_runner_path' default='$(env SCENARIO_RUNNER_PATH)'/><!-- path to scenario runner -->
 
-  <!-- carla ros manual control -->
-  <include file="$(find carla_manual_control)/launch/carla_manual_control.launch">
-    <arg name='role_name' value='$(arg role_name)'/>
-  </include>
+  <!-- ego vehicle parameter -->
+  <arg name="role_name" default="ego_vehicle"/> <!-- role name of the ego vehicle (used for identification in many nodes) -->
+  <arg name="vehicle_filter" default="vehicle.tesla.model3"/> <!-- which vehicle type to use for the ego. See blueprint library for others -->
+  <arg name="avoid_risk" default="True"/> <!-- should the agent avoid crashs and respect red traffic lights? -->
 
-  <!--
-    #################
-    # CARLA Clients #
-    #################
-  -->
-  <!-- ros-bridge -->
+  <!-- ===================================================== -->
+  <!-- The ros bridge -->
   <include file="$(find carla_ros_bridge)/launch/carla_ros_bridge.launch">
     <arg name='host' value='$(arg host)'/>
     <arg name='port' value='$(arg port)'/>
@@ -41,11 +29,10 @@
     <arg name='fixed_delta_seconds' value='$(arg fixed_delta_seconds)'/>
   </include>
 
-  <!-- the ego vehicle, that will be controlled by an agent (e.g. carla_ad_agent) -->
+  <!-- the ego vehicle, that will be controlled by the carla_ad_agent -->
   <include file="$(find carla_spawn_objects)/launch/carla_example_ego_vehicle.launch">
     <arg name="objects_definition_file" value='$(find carla_spawn_objects)/config/objects.json'/>
     <arg name='role_name' value='$(arg role_name)'/>
-    <arg name="spawn_point_ego_vehicle" value="$(arg spawn_point)"/>
     <arg name="spawn_sensors_only" value="false"/>
   </include>
 
@@ -57,8 +44,14 @@
     <arg name='role_name' value='$(arg role_name)'/>
   </include>
 
+  <!-- To be able to maneuver with rviz, this node converts twist to vehicle control commands -->
+  <node pkg="carla_twist_to_control" type="carla_twist_to_control.py" name="carla_twist_to_control">
+    <remap from="/carla/$(arg role_name)/vehicle_control_cmd" to="/carla/$(arg role_name)/vehicle_control_cmd_manual"/>
+    <param name="role_name" value="$(arg role_name)"/>
+  </node>
+
   <!-- Scenario Runner and an example scenario-->
-  <!-- <node pkg="rostopic" type="rostopic" name="publish_scenarios"
+  <node pkg="rostopic" type="rostopic" name="publish_scenarios"
     args="pub /carla/available_scenarios carla_ros_scenario_runner_types/CarlaScenarioList '{ 'scenarios':  
       [
         {
@@ -73,10 +66,10 @@
     <arg name="role_name" value="$(arg role_name)"/>
     <arg name="scenario_runner_path" value="$(arg scenario_runner_path)"/>
     <arg name="wait_for_ego" value="True"/>
-  </include> -->
+  </include>
 
   <!-- Rviz visualization-->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find carla_ros_bridge)/config/carla_ad_demo.rviz" required="true" output="screen">
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find carla_ad_demo)/config/carla_ad_demo.rviz" required="true" output="screen">
     <remap from="carla/ego_vehicle/spectator_pose" to="/carla/ego_vehicle/rgb_view/control/set_transform"/>
   </node>
 

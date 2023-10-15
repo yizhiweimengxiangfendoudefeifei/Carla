@@ -178,7 +178,9 @@ class CarlaSpawnObjects(CompatibleNode):
                     spawn_object_request.transform = spawn_point
 
                     response_id = self.spawn_object(spawn_object_request)
+                    print("response_id = {}".format(response_id))
                     if response_id != -1:
+                        
                         player_spawned = True
                         self.players.append(response_id)
                         # Set up the sensors

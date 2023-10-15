@@ -213,7 +213,7 @@ class CarlaToRosWaypointConverter(CompatibleNode):
         #                         carla.Location(goal.location.x,
         #                                        goal.location.y,
         #                                        goal.location.z))
-        # route = grp.trace_route(carla.Location(133.3,195.39,0),
+        # route = grp.trace_route(carla.Location(-127.4,-195.4,0),
         #                         carla.Location(goal.location.x,
         #                                        goal.location.y,
         #                                        goal.location.z))
