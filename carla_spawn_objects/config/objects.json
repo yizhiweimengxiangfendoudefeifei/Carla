@@ -161,7 +161,7 @@
         {
             "type": "vehicle.mercedes.sprinter",
             "id": "obs1",
-            "spawn_point": {"x": 160, "y": -134, "z": 0.1, "roll": 0, "pitch": 0, "yaw": 0},
+            "spawn_point": {"x": -3.8, "y": 154, "z": 1, "roll": 0, "pitch": 0, "yaw": -90},
             "sensors": 
             [
                 {

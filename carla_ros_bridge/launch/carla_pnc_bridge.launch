@@ -3,11 +3,16 @@
   <arg name='host' default='localhost'/>
   <arg name='port' default='2000'/>
   <arg name='timeout' default='10'/>
-  <arg name='town' default='Town01'/>
+  <arg name='town' default='Town03'/>
   <arg name='role_name' default='ego_vehicle'/>
-  <!-- use comma separated format "127.4,-195.4,0.1,0,0,180" -->
-  <arg name='spawn_point' default='120,-133.4,0.1,0,0,0'/>
+  <!-- <arg name='spawn_point' default='120,-133.4,0.5,0,0,0'/> --> <!--town01-->
+  <!-- <arg name='spawn_point' default='-10, -43.3, 3, 0, 0, -90'/> -->
   <!-- <arg name='spawn_point' default='127.4,-195.4,0.1,0,0,180'/> -->
+  <!-- <arg name='spawn_point' default='44.8,98.3,0.1,0,0,25'/> --> <!--town04-->
+  <!-- <arg name='spawn_point' default='-326.2, -435.8, 0.1, 0, 0, 0'/> --> <!--town04-->
+  <!-- <arg name='spawn_point' default='-141, -208.5, 9, 0, 0, 0'/> --> <!--town05-->
+  <arg name='spawn_point' default='-2.8,184,1,0,0,270'/>   <!--town03-->
+  <!-- <arg name='spawn_point' default='35,-13,1,0,0,90'/> -->
   <arg name='use_manual_control' default='False'/>
 
   <!-- Enable/disable passive mode -->
@@ -58,12 +63,22 @@
   </include>
 
   <!-- Scenario Runner and an example scenario-->
-  <!-- <node pkg="rostopic" type="rostopic" name="publish_scenarios"
-    args="pub /carla/available_scenarios carla_ros_scenario_runner_types/CarlaScenarioList '{ 'scenarios':  
+  <node pkg="rostopic" type="rostopic" name="publish_scenarios"
+    args="pub /carla/available_scenarios carla_ros_scenario_runner_types/CarlaScenarioList 
+    '{ 
+      'scenarios':  
       [
         {
           'name': 'FollowLeadingVehicle',
-          'scenario_file': '$(find carla_ad_demo)/config/FollowLeadingVehicle.xosc'
+          'scenario_file': '$(find carla_ros_bridge)/config/FollowLeadingVehicle.xosc'
+        },
+        {
+          'name': 'FollowLeadingVehicle01',
+          'scenario_file': '$(find carla_ros_bridge)/config/FollowLeadingVehicle01.xosc'
+        },
+        {
+          'name': 'IntersectionCollisionAvoidance',
+          'scenario_file': '$(find carla_ros_bridge)/config/IntersectionCollisionAvoidance.xosc'
         }
       ]
     }' -l"/>
@@ -73,7 +88,7 @@
     <arg name="role_name" value="$(arg role_name)"/>
     <arg name="scenario_runner_path" value="$(arg scenario_runner_path)"/>
     <arg name="wait_for_ego" value="True"/>
-  </include> -->
+  </include>
 
   <!-- Rviz visualization-->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find carla_ros_bridge)/config/carla_ad_demo.rviz" required="true" output="screen">

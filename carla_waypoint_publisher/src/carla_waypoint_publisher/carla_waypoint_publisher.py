@@ -241,6 +241,16 @@ class CarlaToRosWaypointConverter(CompatibleNode):
             msg.poses[0].pose.position.y,
             msg.poses[0].pose.position.z))
         self.waypoint_publisher.publish(msg)
+
+        carla_position = carla.Location()
+        carla_position.x = msg.poses[0].pose.position.x
+        carla_position.y = -msg.poses[0].pose.position.y
+        carla_position.z = msg.poses[0].pose.position.z
+
+        carla_waypoint = self.map.get_waypoint(carla_position)
+        print("response.waypoint.lane_id {}.".format(carla_waypoint.lane_id))
+        print("response.waypoint.road_id {}.".format(carla_waypoint.road_id))
+
         self.loginfo("Published {} waypoints.".format(len(msg.poses)))
 
     def connect_to_carla(self):
